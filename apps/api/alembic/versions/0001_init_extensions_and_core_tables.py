@@ -3,6 +3,18 @@
 Revision ID: 0001
 Revises:
 Create Date: 2026-05-17 00:00:00.000000
+
+This migration uses raw SQL via ``conn.execute(sa.text(...))`` rather than
+Alembic's ``op.create_table`` + ``sa.Enum`` helpers. Reason: when models that
+declare Enum columns are imported into Alembic's env (as they are here, so
+that ``Base.metadata`` is populated), the ORM event listeners on
+``Enum._on_table_create`` can fire a second time during ``op.create_table``,
+producing "type already exists" errors. Raw SQL bypasses the ORM event
+machinery and emits exactly the DDL we want.
+
+Future migrations should normally use ``op.create_table`` / ``op.add_column``
+etc. — this raw-SQL pattern is only required for the initial schema where
+enum types and their owning tables are created in the same migration.
 """
 from collections.abc import Sequence
 
@@ -60,7 +72,7 @@ def upgrade() -> None:
         CREATE TABLE users (
             id          UUID PRIMARY KEY,
             org_id      UUID        REFERENCES organizations(id) ON DELETE CASCADE,
-            email       VARCHAR(320) NOT NULL UNIQUE,
+            email       VARCHAR(320) NOT NULL,
             name        VARCHAR(256),
             role        user_role   NOT NULL DEFAULT 'org_admin',
             status      user_status NOT NULL DEFAULT 'invited',
@@ -70,7 +82,7 @@ def upgrade() -> None:
         )
     """))
     conn.execute(sa.text("CREATE INDEX ix_users_org_id ON users (org_id)"))
-    conn.execute(sa.text("CREATE INDEX ix_users_email  ON users (email)"))
+    conn.execute(sa.text("CREATE UNIQUE INDEX ix_users_email ON users (email)"))
 
     conn.execute(sa.text("""
         CREATE TABLE audit_log (
