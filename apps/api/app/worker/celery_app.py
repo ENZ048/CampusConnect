@@ -26,3 +26,7 @@ def _build() -> Celery:
 
 
 celery_app = _build()
+
+from app.worker.beat_schedule import BEAT_SCHEDULE  # noqa: E402
+
+celery_app.conf.beat_schedule = BEAT_SCHEDULE
