@@ -48,3 +48,6 @@ test-results/
 # Local env
 .env.*
 !.env.example
+
+# Auth SQLite database
+apps/web/auth.sqlite
