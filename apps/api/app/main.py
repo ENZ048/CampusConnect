@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from app.middleware.request_id import RequestIDMiddleware
-from app.routers import health
+from app.routers import health, metrics
 
 
 def create_app() -> FastAPI:
@@ -13,6 +13,7 @@ def create_app() -> FastAPI:
     )
     app.add_middleware(RequestIDMiddleware)
     app.include_router(health.router)
+    app.include_router(metrics.router)
     return app
 
 
