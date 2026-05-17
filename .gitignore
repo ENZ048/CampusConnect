@@ -27,3 +27,24 @@ build/
 
 # Logs
 *.log
+
+# Python tooling
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# uv
+.uv/
+
+# Node
+.pnpm-store/
+.turbo/
+.tsbuildinfo
+playwright-report/
+test-results/
+
+# Local env
+.env.*
+!.env.example
