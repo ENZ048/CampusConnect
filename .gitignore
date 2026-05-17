@@ -1,0 +1,29 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Claude / planning artifacts
+.claude/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.env.local
+*.egg-info/
+
+# Node
+node_modules/
+.next/
+dist/
+build/
+
+# Logs
+*.log
