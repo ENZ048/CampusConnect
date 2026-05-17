@@ -47,8 +47,16 @@ async def ensure_app_role():
 
     This runs once per module.  It must survive migration up/down cycles that
     may drop and recreate tables, which invalidates pre-existing grants.
+
+    We dispose the global engine first so that any connections created by
+    TestClient (which runs its own anyio event loop) are discarded before we
+    try to open new ones inside the pytest-asyncio session loop.  Without this
+    dispose(), pool_pre_ping re-uses a stale asyncpg connection bound to a
+    different loop and raises "Future attached to a different loop".
     """
-    from app.db.session import async_session_factory
+    from app.db.session import async_session_factory, engine
+
+    await engine.dispose()
 
     async with async_session_factory() as session:
         # Create role if it doesn't exist
