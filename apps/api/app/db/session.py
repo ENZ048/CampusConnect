@@ -28,3 +28,8 @@ async_session_factory = async_sessionmaker(
 async def get_db() -> AsyncIterator[AsyncSession]:
     async with async_session_factory() as session:
         yield session
+
+
+from app.db.tenant_filter import install_listeners  # noqa: E402
+
+install_listeners()
