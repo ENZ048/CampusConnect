@@ -5,9 +5,11 @@ from app.routers import health, metrics
 
 
 def create_app() -> FastAPI:
+    from app.observability.otel import init_otel, instrument_app
     from app.observability.sentry import init_sentry
 
     init_sentry()
+    init_otel()
     app = FastAPI(
         title="CampusConnect API",
         version="0.1.0",
@@ -17,6 +19,7 @@ def create_app() -> FastAPI:
     app.add_middleware(RequestIDMiddleware)
     app.include_router(health.router)
     app.include_router(metrics.router)
+    instrument_app(app)
     return app
 
 
