@@ -15,7 +15,6 @@ def test_sentry_init_is_called_during_app_create(monkeypatch: pytest.MonkeyPatch
         calls.append(None)
 
     monkeypatch.setattr("app.observability.sentry.init_sentry", fake_init)
-    from importlib import reload
 
     import app.main
 

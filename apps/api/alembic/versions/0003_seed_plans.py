@@ -4,7 +4,10 @@ Revision ID: 0003
 Revises: 0002
 Create Date: 2026-05-17 00:02:00.000000
 """
+
 from collections.abc import Sequence
+
+import sqlalchemy as sa
 
 from alembic import op
 
@@ -34,22 +37,38 @@ PLANS = [
         "Enterprise",
         0,
         100000,
-        '{"campaigns": true, "rag": true, "languages": ["en","hi","hinglish"], "sla": "24h", "sso": true}',
+        (
+            '{"campaigns": true, "rag": true, '
+            '"languages": ["en","hi","hinglish"], "sla": "24h", "sso": true}'
+        ),
     ),
 ]
 
+_INSERT_SQL = sa.text(
+    "INSERT INTO plans (id, code, name, monthly_inr, monthly_lead_quota, features) "
+    "VALUES (gen_random_uuid(), :code, :name, :monthly_inr, :monthly_lead_quota, :features) "
+    "ON CONFLICT (code) DO NOTHING"
+)
+
+_DELETE_SQL = sa.text("DELETE FROM plans WHERE code = :code")
+
 
 def upgrade() -> None:
+    conn = op.get_bind()
     for code, name, monthly_inr, monthly_lead_quota, features_json in PLANS:
-        op.execute(
-            f"""
-            INSERT INTO plans (id, code, name, monthly_inr, monthly_lead_quota, features)
-            VALUES (gen_random_uuid(), '{code}', '{name}', {monthly_inr}, {monthly_lead_quota}, '{features_json}')
-            ON CONFLICT (code) DO NOTHING
-            """
+        conn.execute(
+            _INSERT_SQL,
+            {
+                "code": code,
+                "name": name,
+                "monthly_inr": monthly_inr,
+                "monthly_lead_quota": monthly_lead_quota,
+                "features": features_json,
+            },
         )
 
 
 def downgrade() -> None:
+    conn = op.get_bind()
     for code, *_ in PLANS:
-        op.execute(f"DELETE FROM plans WHERE code = '{code}'")
+        conn.execute(_DELETE_SQL, {"code": code})

@@ -9,7 +9,6 @@ exists and holds the necessary table grants before the tests run.
 import uuid
 
 import pytest
-import pytest_asyncio
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
@@ -73,7 +72,10 @@ async def ensure_app_role():
         await session.execute(text(f"GRANT CONNECT ON DATABASE {db_name} TO {APP_ROLE}"))
         await session.execute(text(f"GRANT USAGE ON SCHEMA public TO {APP_ROLE}"))
         await session.execute(
-            text(f"GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO {APP_ROLE}")
+            text(
+                f"GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES "
+                f"IN SCHEMA public TO {APP_ROLE}"
+            )
         )
         await session.execute(
             text(f"GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {APP_ROLE}")
@@ -139,6 +141,8 @@ async def test_rls_without_org_setting_returns_no_rows():
     app_factory = _app_sessions()
 
     async with app_factory() as session:
-        await session.execute(text("SET LOCAL app.current_org_id = '00000000-0000-0000-0000-000000000000'"))
+        await session.execute(
+            text("SET LOCAL app.current_org_id = '00000000-0000-0000-0000-000000000000'")
+        )
         rows = (await session.execute(text("SELECT count(*) FROM audit_log"))).scalar_one()
         assert rows == 0

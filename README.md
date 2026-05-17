@@ -39,3 +39,20 @@ docs/         Specifications, plans, runbook, architecture
 | `make test` | Run all tests |
 | `make lint` | Run ruff and eslint |
 | `make typecheck` | Run mypy and tsc |
+
+## Roadmap
+
+- [x] **M0 - Foundations** (this milestone). Multi-tenant Postgres with RLS, FastAPI + Celery + Redis, Next.js dashboard with magic-link auth, Sentry + OpenTelemetry, CI green. Tagged `v0.0.1-m0`.
+- [ ] M1 - WhatsApp inbound, dashboard inbox, manual reply.
+- [ ] M2 - Telegram adapter.
+- [ ] M3 - LLM agent (function-calling) and qualification flow.
+- [ ] M4 - RAG knowledge layer with citations.
+- [ ] M5 - Voice notes, multilingual, sentiment, handover summary.
+- [ ] M6 - Nurture sequences.
+- [ ] M7 - Outbound campaigns.
+- [ ] M8 - Calendar bookings.
+- [ ] M9 - Prompt versioning + A/B testing.
+- [ ] M10 - Outbound webhooks.
+- [ ] M11 - Billing, demo sandbox, marketing, status page.
+- [ ] M12 - Compliance, load tests, runbooks.
+- [ ] M13 - README, video, polish.

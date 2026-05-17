@@ -19,6 +19,7 @@ enum types and their owning tables are created in the same migration.
 from collections.abc import Sequence
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision: str = "0001"
@@ -34,10 +35,14 @@ def upgrade() -> None:
     conn.execute(sa.text("CREATE EXTENSION IF NOT EXISTS pg_trgm"))
     conn.execute(sa.text("CREATE EXTENSION IF NOT EXISTS pgcrypto"))
 
-    conn.execute(sa.text("CREATE TYPE org_status AS ENUM ('trial', 'active', 'past_due', 'suspended')"))
+    conn.execute(
+        sa.text("CREATE TYPE org_status AS ENUM ('trial', 'active', 'past_due', 'suspended')")
+    )
     conn.execute(sa.text("CREATE TYPE language_code AS ENUM ('en', 'hi', 'hinglish')"))
     conn.execute(sa.text("CREATE TYPE data_residency AS ENUM ('in', 'us', 'eu')"))
-    conn.execute(sa.text("CREATE TYPE user_role AS ENUM ('platform_admin', 'org_admin', 'counsellor')"))
+    conn.execute(
+        sa.text("CREATE TYPE user_role AS ENUM ('platform_admin', 'org_admin', 'counsellor')")
+    )
     conn.execute(sa.text("CREATE TYPE user_status AS ENUM ('invited', 'active', 'disabled')"))
 
     conn.execute(sa.text("""
