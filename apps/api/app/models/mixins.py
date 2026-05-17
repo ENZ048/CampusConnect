@@ -13,9 +13,6 @@ class UUIDPrimaryKeyMixin:
         default=uuid.uuid4,
     )
 
-    def __init_subclass__(cls, **kwargs: object) -> None:
-        super().__init_subclass__(**kwargs)
-
     def __init__(self, **kw: object) -> None:
         if "id" not in kw:
             kw["id"] = uuid.uuid4()
