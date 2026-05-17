@@ -10,6 +10,7 @@ from app.models.mixins import TenantedMixin
 
 _current_org: ContextVar[uuid.UUID | None] = ContextVar("current_org", default=None)
 _bypass: ContextVar[bool] = ContextVar("bypass_tenant_filter", default=False)
+_listeners_installed = False
 
 
 @contextmanager
@@ -32,7 +33,13 @@ def bypass_tenant_filter() -> Iterator[None]:
 
 def install_listeners() -> None:
     """SQLAlchemy 2.x: hook into Session.do_orm_execute and inject a
-    with_loader_criteria filter on every TenantedMixin SELECT."""
+    with_loader_criteria filter on every TenantedMixin SELECT.
+
+    Idempotent — safe to call multiple times."""
+    global _listeners_installed
+    if _listeners_installed:
+        return
+    _listeners_installed = True
 
     @event.listens_for(Session, "do_orm_execute")
     def _do_orm_execute(state):  # type: ignore[no-untyped-def]
