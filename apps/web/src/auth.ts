@@ -20,6 +20,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         host: env.SMTP_HOST,
         port: env.SMTP_PORT,
         secure: false,
+        auth: false as unknown as undefined,
       },
       from: env.SMTP_FROM,
     }),
