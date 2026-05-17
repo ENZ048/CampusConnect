@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.middleware.request_id import RequestIDMiddleware
+from app.routers import health
 
 
 def create_app() -> FastAPI:
@@ -11,6 +12,7 @@ def create_app() -> FastAPI:
         redoc_url="/redoc",
     )
     app.add_middleware(RequestIDMiddleware)
+    app.include_router(health.router)
     return app
 
 
