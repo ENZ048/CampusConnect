@@ -5,6 +5,9 @@ from app.routers import health, metrics
 
 
 def create_app() -> FastAPI:
+    from app.observability.sentry import init_sentry
+
+    init_sentry()
     app = FastAPI(
         title="CampusConnect API",
         version="0.1.0",
