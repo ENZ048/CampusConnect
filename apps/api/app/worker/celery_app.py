@@ -3,6 +3,7 @@ from celery import Celery
 from app.config import get_settings
 from app.observability.otel import init_otel
 from app.observability.sentry import init_sentry
+from app.worker.beat_schedule import BEAT_SCHEDULE
 
 _settings = get_settings()
 
@@ -22,11 +23,8 @@ def _build() -> Celery:
         broker_connection_retry_on_startup=True,
         worker_prefetch_multiplier=1,
     )
+    app.conf.beat_schedule = BEAT_SCHEDULE
     return app
 
 
 celery_app = _build()
-
-from app.worker.beat_schedule import BEAT_SCHEDULE  # noqa: E402
-
-celery_app.conf.beat_schedule = BEAT_SCHEDULE
